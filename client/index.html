@@ -33,6 +33,8 @@
 
 <body>
 	<div id="vue-app">
+		<p v-if="labels.infoMessage != ''">{{ labels.infoMessage }}</p>
+
 		<form action="create" method="post">
 			<input type="text" id="name" name="name" v-bind:placeholder="labels.name" required>
 			</br>
@@ -48,16 +50,26 @@
 
 	<script>
 		const app = new Vue({
-			el: '#vue-app',
+			el: "#vue-app",
 			data: {
 				labels: {
-					name: 'Your name',
-					email: 'Your email',
-					create: 'Send',
-					big_red_button: 'Le big red button'
+					name: "Your name",
+					email: "Your email",
+					create: "Send",
+					big_red_button: "Le big red button",
+					infoMessage: "",
 				},
 			}
 		});
+
+		const urlParams = new URLSearchParams(window.location.search);
+		const registeredEmail = urlParams.get("registered");
+		const errorType = urlParams.get("error");
+		if (registeredEmail !== null) {
+			app.labels.infoMessage = `${registeredEmail} registered successfully`;
+		} else if (error !== null) {
+			app.labels.infoMessage = "Error: bla";
+		}
 
 		const selectPairs = () => {
 			window.location.replace(window.location.href + "pairs");
