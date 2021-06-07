@@ -22,6 +22,13 @@
 			margin: 10px;
 		}
 
+		table.radioOptions {
+			margin-left: auto;
+			margin-right: auto;
+			text-align: left;
+			align: center;
+		}
+
 		.special-button {
 			background-color: #FF3C3C; /* Slightly subtler than red */
 			border-radius: 5px;
@@ -42,17 +49,14 @@
 			<input type="text" id="email" name="email" v-bind:placeholder="labels.email" required>
 			</br>
 
-			<span>
-				<span v-for="option in radioOptions">
-					<input type="radio" v-model="selectedOption" v-bind:id="radioIdName + option.id" v-bind:name="radioName" :value="option.id">
-					<label v-bind:for="radioIdName + option.id">{{ option.txt }}</label>
-				</span>
-				</br>
-			</span>
+			<table class="radioOptions">
+			<tr v-for="option in radioOptions">
+				<td><input type="radio" v-model="selectedOption" v-bind:id="radioIdName + option.value" v-bind:name="radioName" v-bind:value="option.value"/></td>
+				<td><label v-bind:for="radioIdName + option.value">{{ option.txt }}</label></td>
+			</tr>
+			</table>
 
-			<button v-if="selectedOption == 0" type="submit">{{ labels.create }}</button>
-			<button v-if="selectedOption == 1" type="submit">{{ labels.delete }}</button>
-			<button v-if="selectedOption == 2" type="submit">{{ labels.change }}</button>
+			<button type="submit">{{ radioOptions[selectedOption].button }}</button>
 		</form>
 
 		<button type="button" class="special-button" onClick="selectPairs();">{{ labels.big_red_button }}</button>
@@ -65,17 +69,14 @@
 				radioName: "formOptions",
 				radioIdName: "radio",
 				radioOptions: [
-					{txt: "Register", id: 0},
-					{txt: "Delete", id: 1},
-					{txt: "Change email", id: 2},
+					{txt: "I want to participate", button: "Sign me up", value: 0},
+					{txt: "I don't want to participate anymore", button: "Cancel my application", value: 1},
+					{txt: "I typed something wrong", button: "Change my email", value: 2},
 				],
 				selectedOption: 0,
 				labels: {
 					name: "Your name",
 					email: "Your email",
-					create: "Register",
-					delete: "Delete",
-					change: "Change email",
 					big_red_button: "Le big red button",
 					infoMessage: "",
 				},
