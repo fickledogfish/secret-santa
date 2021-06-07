@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Secret Santa</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+	<style>
+		#vue-app {
+			text-align: center;
+		}
+
+		form input {
+			width: 80%;
+			padding: 10px;
+			margin: 10px;
+			box-sizing: border-box;
+		}
+
+		form button {
+			padding: 10px;
+			margin: 10px;
+		}
+
+		.special-button {
+			background-color: #FF3C3C; /* Slightly subtler than red */
+			border-radius: 5px;
+			padding: 10px;
+			margin: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="vue-app">
+		<form action="create" method="post">
+			<input type="text" id="name" name="name" v-bind:placeholder="labels.name" required>
+			</br>
+
+			<input type="text" id="email" name="email" v-bind:placeholder="labels.email" required>
+			</br>
+
+			<button type="submit">{{ labels.create }}</button>
+		</form>
+
+		<button type="button" class="special-button" onClick="selectPairs();">{{ labels.big_red_button }}</button>
+	</div>
+
+	<script>
+		const app = new Vue({
+			el: '#vue-app',
+			data: {
+				labels: {
+					name: 'Your name',
+					email: 'Your email',
+					create: 'Send',
+					big_red_button: 'Le big red button'
+				},
+			}
+		});
+
+		const selectPairs = () => {
+			window.location.replace(window.location.href + "pairs");
+		};
+	</script>
+</body>
+</html>
