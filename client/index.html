@@ -42,7 +42,17 @@
 			<input type="text" id="email" name="email" v-bind:placeholder="labels.email" required>
 			</br>
 
-			<button type="submit">{{ labels.create }}</button>
+			<span>
+				<span v-for="option in radioOptions">
+					<input type="radio" v-model="selectedOption" v-bind:id="radioIdName + option.id" v-bind:name="radioName" :value="option.id">
+					<label v-bind:for="radioIdName + option.id">{{ option.txt }}</label>
+				</span>
+				</br>
+			</span>
+
+			<button v-if="selectedOption == 0" type="submit">{{ labels.create }}</button>
+			<button v-if="selectedOption == 1" type="submit">{{ labels.delete }}</button>
+			<button v-if="selectedOption == 2" type="submit">{{ labels.change }}</button>
 		</form>
 
 		<button type="button" class="special-button" onClick="selectPairs();">{{ labels.big_red_button }}</button>
@@ -52,10 +62,20 @@
 		const app = new Vue({
 			el: "#vue-app",
 			data: {
+				radioName: "formOptions",
+				radioIdName: "radio",
+				radioOptions: [
+					{txt: "Register", id: 0},
+					{txt: "Delete", id: 1},
+					{txt: "Change email", id: 2},
+				],
+				selectedOption: 0,
 				labels: {
 					name: "Your name",
 					email: "Your email",
-					create: "Send",
+					create: "Register",
+					delete: "Delete",
+					change: "Change email",
 					big_red_button: "Le big red button",
 					infoMessage: "",
 				},
@@ -67,7 +87,7 @@
 		const errorType = urlParams.get("error");
 		if (registeredEmail !== null) {
 			app.labels.infoMessage = `${registeredEmail} registered successfully`;
-		} else if (error !== null) {
+		} else if (errorType !== null) {
 			app.labels.infoMessage = "Error: bla";
 		}
 
