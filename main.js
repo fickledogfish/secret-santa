@@ -24,38 +24,74 @@ const main = () => {
 
 	// Register a user.
 	app.post("/create", urlencodedParser, (req, res) => {
+		log.debug(
+			"User %s <%s> wants to join the party",
+			req.body.name,
+			req.body.email
+		);
+
+		// Assert method.
+		if (!assertAction(req, "create")) {
+			// TODO: silently redirecting is fine?
+			res.redirect("/");
+			return;
+		}
+
 		// TODO: validate data
 
 		// TODO: check if the user is already in the database
 
 		// TODO: insert user in the database
 
-		const user = req.body;
-		log.debug("Registering %j", user);
-		// res.send('ok');
-
 		// Redirect back into /.
 		res.redirect(url.format({
 			"pathname": "/",
 			"query": {
-				"registered": user.email
+				"registered": req.body.email
 			}
 		}));
 	});
 
 	// Delete a user.
 	app.post("/delete", urlencodedParser, (req, res) => {
-		log.debug("User %s requesting deletion", req.body.user);
+		log.debug(
+			"User %s <%s> requesting deletion",
+			req.body.name,
+			req.body.email
+		);
+
+		// Assert method.
+		if (!assertAction(req, "delete")) {
+			// TODO: silently redirecting is fine?
+			res.redirect("/");
+			return;
+		}
 
 		// TODO: check if a user is in the DB
 
-		// TODO: do not report errors if the user isn't
+		// Return without reporting anything.
+		res.redirect("/");
 	});
 
 	// Run the server.
 	app.listen(port, () => {
 		log.notice(`listening at localhost:${port}`);
 	});
+};
+
+const assertAction = (req, method) => {
+	if (req.body.formAction !== method) {
+		log.error(
+			"User %s <%s> sent to /create, but formAction is actually %s",
+			req.body.name,
+			req.body.email,
+			req.body.formAction
+		);
+
+		return false;
+	}
+
+	return true;
 };
 
 // Hacking a main function into Node.

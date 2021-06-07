@@ -42,7 +42,7 @@
 	<div id="vue-app">
 		<p v-if="labels.infoMessage != ''">{{ labels.infoMessage }}</p>
 
-		<form action="create" method="post">
+		<form v-bind:action="selectedOption" method="post">
 			<input type="text" id="name" name="name" v-bind:placeholder="labels.name" required>
 			</br>
 
@@ -66,14 +66,26 @@
 		const app = new Vue({
 			el: "#vue-app",
 			data: {
-				radioName: "formOptions",
+				radioName: "formAction",
 				radioIdName: "radio",
-				radioOptions: [
-					{txt: "I want to participate", button: "Sign me up", value: 0},
-					{txt: "I don't want to participate anymore", button: "Cancel my application", value: 1},
-					{txt: "I typed something wrong", button: "Change my email", value: 2},
-				],
-				selectedOption: 0,
+				radioOptions: {
+					"create": {
+						txt: "I want to participate",
+						button: "Sign me up",
+						value: "create"
+					},
+					"delete": {
+						txt: "I don't want to participate anymore",
+						button: "Cancel my application",
+						value: "delete"
+					},
+					"update": {
+						txt: "I typed something wrong",
+						button: "Change my email",
+						value: "update"
+					},
+				},
+				selectedOption: "create",
 				labels: {
 					name: "Your name",
 					email: "Your email",
