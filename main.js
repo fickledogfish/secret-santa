@@ -1,14 +1,20 @@
 'use strict';
 
-const log = require("log");
-require("log-node")();
-const express = require("express");
-const bodyParser = require("body-parser");
 const url = require("url");
 
-const PORT = process.env.PORT || 1337;
+// Load environmental variables from the .env file.
+require("dotenv").config();
+
+const log = require("log");
+require("log-node")(); // start logging to the console
+
+const express = require("express");
+const bodyParser = require("body-parser");
 
 const main = () => {
+	const port = process.env.PORT;
+	if (port === undefined) throw "Missing PORT";
+
 	const app = express();
 	const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
@@ -25,7 +31,7 @@ const main = () => {
 		// TODO: insert user in the database
 
 		const user = req.body;
-		log.notice("Registering %j", user);
+		log.debug("Registering %j", user);
 		// res.send('ok');
 
 		// Redirect back into /.
@@ -39,16 +45,16 @@ const main = () => {
 
 	// Delete a user.
 	app.post("/delete", urlencodedParser, (req, res) => {
+		log.debug("User %s requesting deletion", req.body.user);
+
 		// TODO: check if a user is in the DB
 
 		// TODO: do not report errors if the user isn't
-
-		log.notice("Requesting deletion");
 	});
 
 	// Run the server.
-	app.listen(PORT, () => {
-		log.notice(`listening at localhost:${PORT}`);
+	app.listen(port, () => {
+		log.notice(`listening at localhost:${port}`);
 	});
 };
 
