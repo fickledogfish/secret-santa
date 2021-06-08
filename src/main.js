@@ -19,9 +19,9 @@ const main = () => {
 	const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 	// Register routes.
-	app.get("/", routes.get.root);
-	app.post("/create", urlencodedParser, routes.post.create);
-	app.post("/delete", urlencodedParser, routes.post.delete);
+	app.get("/", routes.get);
+	app.post("/create", urlencodedParser, routes.create);
+	app.post("/delete", urlencodedParser, routes.delete);
 
 	// Run the server.
 	app.listen(port, () => {
