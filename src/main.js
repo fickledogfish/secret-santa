@@ -1,29 +1,26 @@
-'use strict';
+"use strict";
 
-// Load environmental variables from the .env file.
-require("dotenv").config();
+import dotenv from "dotenv";
+import log from "log";
+import logn from "log-node";
+import express from "express";
+import bodyParser from "body-parser";
 
-const log = require("log");
-require("log-node")(); // start logging to the console
-
-const express = require("express");
-const bodyParser = require("body-parser");
-
-const routes = require("./routes.js");
+import routes from "./routes.js";
 
 const main = () => {
+	dotenv.config(); // import environmental variables from the .env file
+	logn(); // start logging to the console
+
 	const port = process.env.PORT;
 	if (port === undefined) throw "Missing PORT";
 
 	const app = express();
 	const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+	// Register routes.
 	app.get("/", routes.get.root);
-
-	// Register a user.
 	app.post("/create", urlencodedParser, routes.post.create);
-
-	// Delete a user.
 	app.post("/delete", urlencodedParser, routes.post.delete);
 
 	// Run the server.
@@ -32,7 +29,4 @@ const main = () => {
 	});
 };
 
-// Hacking a main function into Node.
-if (require.main === module) {
-	main();
-}
+main();

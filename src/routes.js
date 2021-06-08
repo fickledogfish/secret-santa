@@ -1,10 +1,16 @@
-const log = require("log");
-const url = require("url");
+"use strict";
 
-module.exports = {
+import log from "log";
+import url from "url";
+import path from "path";
+
+export { routes as default };
+
+const routes = {
 	get: {
 		root: (req, res) => {
-			res.sendFile(`${__dirname}/client/index.html`)
+			const dirname = path.dirname(new URL(import.meta.url).pathname);
+			res.sendFile(`${dirname}/client/index.html`);
 		},
 	},
 
@@ -58,6 +64,9 @@ module.exports = {
 			res.redirect("/");
 		}
 	}
+};
+
+const post = {
 };
 
 const assertAction = (req, method) => {
