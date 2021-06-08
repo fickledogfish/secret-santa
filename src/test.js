@@ -1,4 +1,4 @@
-const test = require('ava');
+import test from "ava";
 
 // Just making sure the tests are actually working.
-test('testing ava', t => t.pass());
+test("testing ava", t => t.pass());
