@@ -4,10 +4,12 @@ import log from "log";
 import url from "url";
 import path from "path";
 
+import { participants } from "./main.js";
+
 export { routes as default };
 
 const routes = {
-	get: (req, res) => {
+	getRoot: (req, res) => {
 		const dirname = path.dirname(new URL(import.meta.url).pathname);
 		res.sendFile(`${dirname}/client/index.html`);
 	},
@@ -31,6 +33,10 @@ const routes = {
 		// TODO: check if the user is already in the database
 
 		// TODO: insert user in the database
+		participants.push({
+			name: req.body.name,
+			email: req.body.email
+		});
 
 		// Redirect back into /.
 		res.redirect(url.format({
@@ -39,6 +45,10 @@ const routes = {
 				"registered": req.body.email
 			}
 		}));
+	},
+
+	read: (req, res) => {
+		res.send(participants);
 	},
 
 	delete: (req, res) => {

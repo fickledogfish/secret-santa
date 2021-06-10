@@ -105,7 +105,13 @@
 		}
 
 		const selectPairs = () => {
-			window.location.replace(window.location.href + "pairs");
+			window.location.replace(
+				location.protocol +
+				"//" +
+				location.host +
+				location.pathname +
+				"read"
+			);
 		};
 	</script>
 </body>

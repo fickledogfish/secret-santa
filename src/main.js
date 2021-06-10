@@ -8,6 +8,8 @@ import bodyParser from "body-parser";
 
 import routes from "./routes.js";
 
+export let participants = [];
+
 const main = () => {
 	dotenv.config(); // import environmental variables from the .env file
 	logn(); // start logging to the console
@@ -19,8 +21,9 @@ const main = () => {
 	const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 	// Register routes.
-	app.get("/", routes.get);
+	app.get("/", routes.getRoot);
 	app.post("/create", urlencodedParser, routes.create);
+	app.get("/read", routes.read);
 	app.post("/delete", urlencodedParser, routes.delete);
 
 	// Run the server.
