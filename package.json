@@ -15,7 +15,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "log": "^6.0.0",
-    "log-node": "^7.0.0"
+    "log-node": "^7.0.0",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "ava": "^3.15.0"

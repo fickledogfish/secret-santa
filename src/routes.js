@@ -3,6 +3,7 @@
 import log from "log";
 import url from "url";
 import path from "path";
+import isEmail from "validator/lib/isEmail.js";
 
 import { participants } from "./main.js";
 
@@ -15,11 +16,12 @@ const routes = {
 	},
 
 	create: (req, res) => {
-		log.debug(
-			"User %s <%s> wants to join the party",
-			req.body.name,
-			req.body.email
-		);
+		const name = req.body.name;
+		const email = req.body.email;
+
+		// TODO: check if name and email are defined
+
+		log.debug("User %s <%s> wants to join the party", name, email);
 
 		// Assert method.
 		if (!assertAction(req, "create")) {
@@ -29,6 +31,16 @@ const routes = {
 		}
 
 		// TODO: validate data
+		if (!isEmail(email)) {
+			log.warn("User %s <%s> is invalid", name, email);
+			res.redirect(url.format({
+				"pathname": "/",
+				"query": {
+					"errorType": "invaidEmail"
+				}
+			}))
+			return; // TODO: error code
+		}
 
 		// TODO: check if the user is already in the database
 

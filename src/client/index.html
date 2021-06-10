@@ -97,11 +97,11 @@
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const registeredEmail = urlParams.get("registered");
-		const errorType = urlParams.get("error");
+		const errorType = urlParams.get("errorType");
 		if (registeredEmail !== null) {
 			app.labels.infoMessage = `${registeredEmail} registered successfully`;
 		} else if (errorType !== null) {
-			app.labels.infoMessage = "Error: bla";
+			app.labels.infoMessage = "Error: " + errorType;
 		}
 
 		const selectPairs = () => {
