@@ -6,6 +6,7 @@ import path from "path";
 import isEmail from "validator/lib/isEmail.js";
 
 import { participants } from "./main.js";
+import { circularPairing } from "./pair.js";
 
 export { routes as default };
 
@@ -39,6 +40,7 @@ const routes = {
 					"errorType": "invaidEmail"
 				}
 			}))
+
 			return; // TODO: error code
 		}
 
@@ -60,7 +62,9 @@ const routes = {
 	},
 
 	read: (req, res) => {
-		res.send(participants);
+		let ps = participants;
+		circularPairing(ps);
+		res.send(ps);
 	},
 
 	delete: (req, res) => {
