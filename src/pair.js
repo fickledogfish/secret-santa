@@ -1,6 +1,7 @@
 "use strict";
 
-/* This will generate a circular permutation, which is good because one gift
+/*
+ * This will generate a circular permutation, which is good because one gift
  * will always lead to the next, eliminating the need for pausing to select the
  * next person or for awkward transitions.
  *

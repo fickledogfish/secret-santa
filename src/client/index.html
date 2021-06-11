@@ -100,8 +100,20 @@
 		const errorType = urlParams.get("errorType");
 		if (registeredEmail !== null) {
 			app.labels.infoMessage = `${registeredEmail} registered successfully`;
-		} else if (errorType !== null) {
-			app.labels.infoMessage = "Error: " + errorType;
+		} else if (errorType !== null) switch (errorType) {
+		case "undefinedName":
+			app.labels.infoMessage = "Error: undefined name";
+			break;
+		case "undefinedEmail":
+			app.labels.infoMessage = "Error: undefined email";
+			break;
+		case "invalidEmail":
+			app.labels.infoMessage = "Error: invalid email";
+			break;
+
+		default:
+			app.labels.infoMessage = `Unknown error: ${errorType}`;
+			break;
 		}
 
 		const selectPairs = () => {

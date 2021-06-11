@@ -5,8 +5,9 @@ import url from "url";
 import path from "path";
 
 import { participants } from "./main.js";
-import { Participant } from "./participant.js";
+import { Participant, ParticipantError as PError } from "./participant.js";
 import { circularPairing } from "./pair.js";
+import { stringifyEnum } from "./utils.js";
 
 export { routes as default };
 
@@ -31,16 +32,17 @@ const routes = {
 		}
 
 		// TODO: validate data
-		if (!p.isValid()) {
-			log.warn("User %s is invalid", p.toString());
+		const pError = p.isValid();
+		if (pError != PError.ok) {
+			log.warn("User %s is invalid: %s", p.toString(), stringifyEnum(pError));
 			res.redirect(url.format({
 				"pathname": "/",
 				"query": {
-					"errorType": "invaidEmail"
+					"errorType": stringifyEnum(pError)
 				}
 			}))
 
-			return; // TODO: error code
+			return;
 		}
 
 		// TODO: check if the user is already in the database
