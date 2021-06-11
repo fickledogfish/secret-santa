@@ -1,5 +1,7 @@
 "use strict";
 
+import isEmail from "validator/lib/isEmail.js";
+
 export class Participant {
 	constructor(name, email) {
 		this.name = name;
@@ -13,5 +15,12 @@ export class Participant {
 
 	gifts(otherPerson) {
 		this.buysTo = otherPerson.toString();
+	}
+
+	isValid() {
+		return (typeof this.name !== "undefined") &&
+			(typeof this.email !== "undefined") &&
+			// TODO: validate name?
+			isEmail(this.email);
 	}
 }

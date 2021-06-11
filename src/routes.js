@@ -3,7 +3,6 @@
 import log from "log";
 import url from "url";
 import path from "path";
-import isEmail from "validator/lib/isEmail.js";
 
 import { participants } from "./main.js";
 import { Participant } from "./participant.js";
@@ -32,7 +31,7 @@ const routes = {
 		}
 
 		// TODO: validate data
-		if (!isEmail(p.email)) {
+		if (!p.isValid()) {
 			log.warn("User %s is invalid", p.toString());
 			res.redirect(url.format({
 				"pathname": "/",
