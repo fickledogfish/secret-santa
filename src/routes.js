@@ -6,6 +6,7 @@ import path from "path";
 import isEmail from "validator/lib/isEmail.js";
 
 import { participants } from "./main.js";
+import { Participant } from "./participant.js";
 import { circularPairing } from "./pair.js";
 
 export { routes as default };
@@ -17,23 +18,22 @@ const routes = {
 	},
 
 	create: (req, res) => {
-		const name = req.body.name;
-		const email = req.body.email;
+		const p = new Participant(req.body.name, req.body.email);
 
 		// TODO: check if name and email are defined
 
-		log.debug("User %s <%s> wants to join the party", name, email);
+		log.debug("User %s wants to join the party", p.toString());
 
 		// Assert method.
-		if (!assertAction(req, "create")) {
+		if (!assertAction(p, req, "create")) {
 			// TODO: silently redirecting is fine?
 			res.redirect("/");
 			return;
 		}
 
 		// TODO: validate data
-		if (!isEmail(email)) {
-			log.warn("User %s <%s> is invalid", name, email);
+		if (!isEmail(p.email)) {
+			log.warn("User %s is invalid", p.toString());
 			res.redirect(url.format({
 				"pathname": "/",
 				"query": {
@@ -47,16 +47,13 @@ const routes = {
 		// TODO: check if the user is already in the database
 
 		// TODO: insert user in the database
-		participants.push({
-			name: req.body.name,
-			email: req.body.email
-		});
+		participants.push(p);
 
 		// Redirect back into /.
 		res.redirect(url.format({
 			"pathname": "/",
 			"query": {
-				"registered": req.body.email
+				"registered": p.email
 			}
 		}));
 	},
@@ -68,14 +65,12 @@ const routes = {
 	},
 
 	delete: (req, res) => {
-		log.debug(
-			"User %s <%s> requesting deletion",
-			req.body.name,
-			req.body.email
-		);
+		const p = new Participant(req.body.name, req.body.email);
+
+		log.debug("User %s requesting deletion", p.toString());
 
 		// Assert method.
-		if (!assertAction(req, "delete")) {
+		if (!assertAction(p, req, "delete")) {
 			// TODO: silently redirecting is fine?
 			res.redirect("/");
 			return;
@@ -88,12 +83,11 @@ const routes = {
 	}
 };
 
-const assertAction = (req, method) => {
+const assertAction = (participant, req, method) => {
 	if (req.body.formAction !== method) {
 		log.error(
-			"User %s <%s> sent to /%s, but formAction is actually %s",
-			req.body.name,
-			req.body.email,
+			"User %s sent to /%s, but formAction is actually %s",
+			participant.toString(),
 			method,
 			req.body.formAction
 		);

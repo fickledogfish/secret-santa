@@ -3,22 +3,25 @@
 /* This will generate a circular permutation, which is good because one gift
  * will always lead to the next, eliminating the need for pausing to select the
  * next person or for awkward transitions.
+ *
+ * Upside is that this is a really simple solution, and it's not very complex.
+ * Downside is that you're missing out on plenty of permutations.
  */
 export const circularPairing = (participants) => {
-	// Shuffle the array
-	for (let i = participants.length - 1; i > 0; i--) {
-		// select a random index
-		const j = Math.floor(Math.random() * (i + 1));
-		[participants[i], participants[j]] = [participants[j], participants[i]];
-	}
+	// Shuffle the array for good measure.
+	shuffleArray(participants);
 
-	// Each person buys to the next one
+	// And now each person buys to the next one.
 	for (let i = 0; i < participants.length - 1; i++) {
-		buysTo(participants[i], participants[i+1]);
+		participants[i].gifts(participants[i+1]);
 	}
-	buysTo(participants[participants.length - 1], participants[0]);
+	// Can't assign the last person in the loop.
+	participants[participants.length - 1].gifts(participants[0]);
 };
 
-const buysTo = (person, otherPerson) => {
-	person.buysTo = `${otherPerson.name} <${otherPerson.email}>`;
+const shuffleArray = (arr) => {
+	for (let i = arr.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[arr[i], arr[j]] = [arr[j], arr[i]];
+	}
 };
