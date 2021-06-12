@@ -5,9 +5,11 @@ import log from "log";
 import logn from "log-node";
 import express from "express";
 import bodyParser from "body-parser";
-import pg from "pg";
 
 import routes from "./routes.js";
+import * as db from "./db.js";
+
+export let connectionPool = null;
 
 export let participants = [];
 
@@ -21,16 +23,15 @@ const main = async () => {
 
 	// Connect to the database (all variables should, at this point, be set by
 	// dotenv).
-	const db = new pg.Client({
-		user: process.env.DB_USER,
-		host: process.env.DB_HOST,
-		database: process.env.DB_DATABASE,
-		password: process.env.DB_PASS,
-		port: process.env.DB_PORT,
-	});
-	await db.connect();
-	const res = await db.query("SELECT NOW()");
-	await db.end();
+	const pool = db.getPool();
+	// Test the connection, just to be sure.
+	try {
+		const client = await pool.connect();
+		await client.query("SELECT NOW()");
+	} catch (err) {
+		log.error(err);
+		return;
+	}
 
 	const port = process.env.PORT;
 	if (port === undefined) throw "Missing PORT";
@@ -48,6 +49,9 @@ const main = async () => {
 	app.listen(port, () => {
 		log.notice(`listening at localhost:${port}`);
 	});
+
+	// On exit, close the connection pool.
+	await pool.end();
 };
 
 await main();
