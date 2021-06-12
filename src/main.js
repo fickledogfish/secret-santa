@@ -9,8 +9,6 @@ import bodyParser from "body-parser";
 import routes from "./routes.js";
 import * as db from "./db.js";
 
-export let connectionPool = null;
-
 export let participants = [];
 
 const main = async () => {
@@ -26,15 +24,19 @@ const main = async () => {
 	const pool = db.getPool();
 	// Test the connection, just to be sure.
 	try {
+		log.debug("Running connection test to the database");
 		const client = await pool.connect();
 		await client.query("SELECT NOW()");
+		client.release();
 	} catch (err) {
 		log.error(err);
 		return;
 	}
+	log.debug("Setting up the database");
+	await db.setup();
 
 	const port = process.env.PORT;
-	if (port === undefined) throw "Missing PORT";
+	if (!port) throw "Missing PORT";
 
 	const app = express();
 	const urlencodedParser = bodyParser.urlencoded({ extended: false });
