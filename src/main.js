@@ -15,6 +15,10 @@ const main = async () => {
 	dotenv.config(); // import environmental variables from the .env file
 	logn(); // start logging to the console
 
+	if (process.env.LOG_LEVEL == "debug") {
+		log.warn("Log level set to debug, do not use it in production");
+	}
+
 	// Connect to the database (all variables should, at this point, be set by
 	// dotenv).
 	const db = new pg.Client({
