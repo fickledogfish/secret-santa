@@ -9,8 +9,6 @@ import bodyParser from "body-parser";
 import routes from "./routes.js";
 import * as db from "./db.js";
 
-export let participants = [];
-
 const main = async () => {
 	dotenv.config(); // import environmental variables from the .env file
 	logn(); // start logging to the console
@@ -51,9 +49,6 @@ const main = async () => {
 	app.listen(port, () => {
 		log.notice(`listening at localhost:${port}`);
 	});
-
-	// On exit, close the connection pool.
-	await pool.end();
 };
 
 await main();

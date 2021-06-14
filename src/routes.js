@@ -4,7 +4,8 @@ import log from "log";
 import url from "url";
 import path from "path";
 
-import { participants } from "./main.js";
+import * as db from "./db.js";
+
 import { Participant, ParticipantError as PError } from "./participant.js";
 import { circularPairing } from "./pair.js";
 import { stringifyEnum } from "./utils.js";
@@ -17,7 +18,7 @@ const routes = {
 		res.sendFile(`${dirname}/client/index.html`);
 	},
 
-	create: (req, res) => {
+	create: async (req, res) => {
 		const p = new Participant(req.body.name, req.body.email);
 
 		// TODO: check if name and email are defined
@@ -48,7 +49,12 @@ const routes = {
 		// TODO: check if the user is already in the database
 
 		// TODO: insert user in the database
-		participants.push(p);
+		try {
+			await db.insert(p);
+		} catch(err) {
+			log.error(err);
+			// TODO: redirect with an error
+		}
 
 		// Redirect back into /.
 		res.redirect(url.format({
@@ -59,8 +65,8 @@ const routes = {
 		}));
 	},
 
-	read: (req, res) => {
-		let ps = participants;
+	read: async (req, res) => {
+		let ps = await db.getAll();
 		circularPairing(ps);
 		res.send(ps);
 	},
