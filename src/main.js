@@ -15,7 +15,7 @@ const main = async () => {
 	dotenv.config(); // import environmental variables from the .env file
 	logn(); // start logging to the console
 
-	if (process.env.LOG_LEVEL == "debug") {
+	if (process.env.LOG_LEVEL === "debug") {
 		log.warn("Log level set to debug, do not use it in production");
 	}
 
