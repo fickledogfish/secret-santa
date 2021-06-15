@@ -32,10 +32,14 @@ const routes = {
 			return;
 		}
 
-		// TODO: validate data
 		const pError = p.isValid();
 		if (pError != PError.ok) {
-			log.warn("User %s is invalid: %s", p.toString(), stringifyEnum(pError));
+			log.warn(
+				"User %s is invalid: %s",
+				p.toString(),
+				stringifyEnum(pError)
+			);
+
 			res.redirect(url.format({
 				"pathname": "/",
 				"query": {
@@ -48,7 +52,6 @@ const routes = {
 
 		// TODO: check if the user is already in the database
 
-		// TODO: insert user in the database
 		try {
 			await db.insert(p);
 		} catch(err) {
@@ -66,9 +69,29 @@ const routes = {
 	},
 
 	read: async (req, res) => {
-		let ps = await db.getAll();
+		log.debug("Rolling the dice");
+
+		const participants = await db.getAll();
+
+		// Convert DB response into an array of Participants
+		let ps = [];
+		for (const p of participants) {
+			ps.push(new Participant(p.name, p.email));
+		}
+
 		circularPairing(ps);
-		res.send(ps);
+
+		// TODO: Send email
+
+		log.debug("Rolling result: %o", ps);
+
+		// Redirect pack to root
+		res.redirect(url.format({
+			"pathname": "/",
+				"query": {
+					"generated": true
+				}
+		}));
 	},
 
 	delete: (req, res) => {
