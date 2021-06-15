@@ -5,6 +5,7 @@ import url from "url";
 import path from "path";
 
 import * as db from "./db.js";
+import * as email from "./email.js";
 
 import { Participant, ParticipantError as PError } from "./participant.js";
 import { circularPairing } from "./pair.js";
@@ -87,7 +88,7 @@ const routes = {
 
 		circularPairing(ps);
 
-		// TODO: Send email
+		await email.sendResults(ps);
 
 		log.debug("Rolling result: %o", ps);
 
