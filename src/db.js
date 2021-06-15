@@ -52,6 +52,24 @@ export const insert = async (participant) => {
 	client.release();
 };
 
+/*
+ * Checks if a client is in the database by getting it's ID.
+ */
+export const isRegistered = async (participant) => {
+	const client = await connectionPool.connect();
+
+	log.debug("Checking %s...", participant);
+	const res = await client.query(
+		"SELECT id FROM users WHERE name = $1 AND email = $2",
+		[participant.name, participant.email],
+	);
+
+	const registered = res.rows.length !== 0;
+
+	client.release();
+	return registered;
+};
+
 export const getAll = async () => {
 	const client = await connectionPool.connect();
 
@@ -63,4 +81,30 @@ export const getAll = async () => {
 	client.release();
 
 	return res.rows;
+};
+
+export const remove = async (participant) => {
+	const client = await connectionPool.connect();
+
+	log.debug("Deleting %s", participant);
+	const res = await client.query(
+		"SELECT id FROM users WHERE name = $1 AND email = $2",
+		[participant.name, participant.email],
+	);
+
+	// Do nothing if we get nothing.
+	if (res.rows.length === 0) {
+		log.debug("Cannot find entry for %s", participant);
+		client.release();
+		return;
+	}
+
+	log.debug("Deleting %o", res.rows);
+
+	// If there are duplicated entries by any chance, delete them all.
+	for (const id of res.rows) {
+		await client.query("DELETE FROM users WHERE id = $1", [id.id]);
+	}
+
+	client.release();
 };

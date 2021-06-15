@@ -50,7 +50,13 @@ const routes = {
 			return;
 		}
 
-		// TODO: check if the user is already in the database
+		if (await db.isRegistered(p)) {
+			log.debug("Attempting to insert duplicate: %s", p);
+
+			// TODO: Sillently redirecting is fine?
+			res.redirect("/");
+			return;
+		}
 
 		try {
 			await db.insert(p);
@@ -94,7 +100,7 @@ const routes = {
 		}));
 	},
 
-	delete: (req, res) => {
+	delete: async (req, res) => {
 		const p = new Participant(req.body.name, req.body.email);
 
 		log.debug("User %s requesting deletion", p.toString());
@@ -106,7 +112,7 @@ const routes = {
 			return;
 		}
 
-		// TODO: check if a user is in the DB
+		await db.remove(p);
 
 		// Return without reporting anything.
 		res.redirect("/");
